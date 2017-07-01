@@ -2,7 +2,9 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import { List, ListItem } from 'material-ui/List';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
+import ActionHome from 'material-ui/svg-icons/action/home';
+import ActionSettings from 'material-ui/svg-icons/action/settings';
+import ActionExit from 'material-ui/svg-icons/action/exit-to-app';
 import { browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -59,26 +61,24 @@ export class Menu extends React.PureComponent { // eslint-disable-line react/pre
             <ListItem
               primaryText={'Home'}
               onClick={() => this.redirect('/', 'HOME')}
-              leftIcon={<ContentInbox />}
+              leftIcon={<ActionHome />}
               style={this.state.selectedListItemKey === 'HOME' ? { backgroundColor: '#dfdfdf' } : {}}
             />
             <ListItem
               primaryText={'Settings'}
-              leftIcon={<ContentInbox />}
+              leftIcon={<ActionSettings />}
               primaryTogglesNestedList
               nestedItems={[
                 <ListItem
                   key={1}
                   onClick={() => this.redirect('/settings/board', 'BOARD')}
                   primaryText={'Board'}
-                  leftIcon={<ContentInbox />}
                   style={this.state.selectedListItemKey === 'BOARD' ? { backgroundColor: '#dfdfdf' } : {}}
                 />,
                 <ListItem
                   key={2}
                   onClick={() => this.redirect('/settings/columns', 'COLUMNS')}
                   primaryText={'Columns'}
-                  leftIcon={<ContentInbox />}
                   style={this.state.selectedListItemKey === 'COLUMNS' ? { backgroundColor: '#dfdfdf' } : {}}
                 />,
               ]}
@@ -86,7 +86,7 @@ export class Menu extends React.PureComponent { // eslint-disable-line react/pre
             <ListItem
               primaryText={'Logout'}
               onClick={() => this.logout()}
-              leftIcon={<ContentInbox />}
+              leftIcon={<ActionExit />}
             />
           </List>
         </Drawer>

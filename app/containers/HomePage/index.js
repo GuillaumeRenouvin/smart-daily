@@ -8,6 +8,8 @@ import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import _ from 'lodash';
 import moment from 'moment';
+import ActionInfo from 'material-ui/svg-icons/action/info';
+import CardDialog from './CardDialog';
 import {
   makeSelectUserId,
   makeSelectBacklogColumnId,
@@ -24,6 +26,8 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
       doneCards: [],
       toDoCards: [],
       doingCards: [],
+      modalState: false,
+      selectedCard: null,
     };
   }
 
@@ -83,11 +87,17 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     });
   }
 
+  displayModalCard = (card) => {
+    this.setState({ modalState: true });
+    this.setState({ selectedCard: card });
+  }
+
   renderDoneCards = () =>
     this.state.doneCards.map((doneCard, index) => (
       <ListItem
         key={index}
         primaryText={doneCard.name}
+        rightIcon={<ActionInfo onClick={() => this.displayModalCard(doneCard)} />}
       />
     ));
 
@@ -96,6 +106,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
       <ListItem
         key={index}
         primaryText={toDoCard.name}
+        rightIcon={<ActionInfo onClick={() => this.displayModalCard(toDoCard)} />}
       />
     ));
 
@@ -104,12 +115,18 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
       <ListItem
         key={index}
         primaryText={doingCard.name}
+        rightIcon={<ActionInfo onClick={() => this.displayModalCard(doingCard)} />}
       />
     ));
 
   render() {
     return (
       <div>
+        <CardDialog
+          card={this.state.selectedCard}
+          modalState={this.state.modalState}
+          handleModalClose={() => this.setState({ modalState: false })}
+        />
         <List>
           <Subheader>Done yesterday</Subheader>
           { this.renderDoneCards() }
