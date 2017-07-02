@@ -1,5 +1,6 @@
 import {
   CHANGE_USER_ID,
+  CHANGE_USER_TRELLO_TOKEN,
   CHANGE_BOARD_ID,
   CHANGE_COLUMNS_ID,
   LOGOUT,
@@ -12,6 +13,13 @@ export function changeUserId(userId) {
   };
 }
 
+export function changeUserTrelloToken(userTrelloToken) {
+  return {
+    type: CHANGE_USER_TRELLO_TOKEN,
+    userTrelloToken,
+  };
+}
+
 export function changeBoardId(boardId) {
   return {
     type: CHANGE_BOARD_ID,
@@ -19,13 +27,13 @@ export function changeBoardId(boardId) {
   };
 }
 
-export function changeColumnsId(backlogColumnId, doingColumnId, doneColumnId, validateColumnId) {
+export function changeColumnsId(backlogColumnId, doingColumnId, validateColumnId, doneColumnId) {
   return {
     type: CHANGE_COLUMNS_ID,
     backlogColumnId,
     doingColumnId,
-    doneColumnId,
     validateColumnId,
+    doneColumnId,
   };
 }
 

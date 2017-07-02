@@ -10,7 +10,7 @@ export class Board extends React.PureComponent { // eslint-disable-line react/pr
   selectBoardCard = (board) => {
     this.props.onChangeBoardId(board.id);
     this.props.onChangeColumnsId(null, null, null, null);
-    browserHistory.push('/settings/Columns');
+    browserHistory.push('/settings/columns');
   }
 
   render() {

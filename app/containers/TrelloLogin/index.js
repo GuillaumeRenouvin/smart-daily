@@ -5,13 +5,13 @@ import { browserHistory } from 'react-router';
 import { Flex } from 'reflexbox';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { makeSelectUserId } from '../../modules/user/userSelectors';
-import { changeUserId } from '../../modules/user/actions';
+import { makeSelectUserId, makeSelectUserTrelloToken } from '../../modules/user/userSelectors';
+import { changeUserId, changeUserTrelloToken } from '../../modules/user/actions';
 
 export class TrelloLogin extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
 
   componentWillMount() {
-    if (this.props.userId) {
+    if (this.props.userId && this.props.userTrelloToken) {
       browserHistory.push('/');
     }
   }
@@ -20,7 +20,7 @@ export class TrelloLogin extends React.PureComponent { // eslint-disable-line re
     const authenticationSuccess = () => {
       Trello.get('/member/me/', (user) => {
         this.props.onChangeUserId(user.id);
-        //browserHistory.push('/settings/board');
+        this.props.onChangeUserTrelloToken(Trello.token());
         browserHistory.push('/');
       });
     };
@@ -50,17 +50,21 @@ export class TrelloLogin extends React.PureComponent { // eslint-disable-line re
 
 TrelloLogin.propTypes = {
   onChangeUserId: React.PropTypes.func,
+  onChangeUserTrelloToken: React.PropTypes.func,
   userId: React.PropTypes.string,
+  userTrelloToken: React.PropTypes.string,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
     onChangeUserId: (userId) => dispatch(changeUserId(userId)),
+    onChangeUserTrelloToken: (userTrelloToken) => dispatch(changeUserTrelloToken(userTrelloToken)),
   };
 }
 
 const mapStateToProps = createStructuredSelector({
   userId: makeSelectUserId(),
+  userTrelloToken: makeSelectUserTrelloToken(),
 });
 
 // Wrap the component to inject dispatch and state into it

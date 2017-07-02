@@ -7,11 +7,14 @@ import { List, ListItem } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import _ from 'lodash';
+import { browserHistory } from 'react-router';
 import moment from 'moment';
 import ActionInfo from 'material-ui/svg-icons/action/info';
 import CardDialog from './CardDialog';
 import {
   makeSelectUserId,
+  makeSelectUserTrelloToken,
+  makeSelectBoardId,
   makeSelectBacklogColumnId,
   makeSelectDoingColumnId,
   makeSelectValidateColumnId,
@@ -32,6 +35,22 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
   }
 
   componentWillMount() {
+    if (this.props.userTrelloToken) {
+      Trello.setToken(this.props.userTrelloToken);
+    }
+    if (!this.props.userId || !this.props.userTrelloToken) {
+      browserHistory.push('/login/trello');
+      return;
+    }
+    if (!this.props.boardId) {
+      browserHistory.push('/settings/board');
+      return;
+    }
+    if (!this.props.backlogColumnId || !this.props.doingColumnId || !this.props.validateColumnId || !this.props.doneColumnId) {
+      browserHistory.push('/settings/columns');
+      return;
+    }
+
     this.setDoneCards();
     this.setToDoCards();
     this.setDoingCards();
@@ -149,6 +168,8 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
 HomePage.propTypes = {
   userId: React.PropTypes.string,
+  userTrelloToken: React.PropTypes.string,
+  boardId: React.PropTypes.string,
   backlogColumnId: React.PropTypes.string,
   doingColumnId: React.PropTypes.string,
   validateColumnId: React.PropTypes.string,
@@ -161,6 +182,8 @@ export function mapDispatchToProps() {
 
 const mapStateToProps = createStructuredSelector({
   userId: makeSelectUserId(),
+  userTrelloToken: makeSelectUserTrelloToken(),
+  boardId: makeSelectBoardId(),
   backlogColumnId: makeSelectBacklogColumnId(),
   doingColumnId: makeSelectDoingColumnId(),
   validateColumnId: makeSelectValidateColumnId(),

@@ -2,14 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 import { createStructuredSelector } from 'reselect';
+import { Loader } from '../../components';
 import Menu from '../Menu';
 import {
+  makeSelectUserRehydrated,
   makeSelectUserId,
-  makeSelectBoardId,
-  makeSelectBacklogColumnId,
-  makeSelectDoingColumnId,
-  makeSelectDoneColumnId,
-  makeSelectValidateColumnId,
 } from '../../modules/user/userSelectors';
 
 export class App extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
@@ -24,13 +21,7 @@ export class App extends React.PureComponent { // eslint-disable-line react/pref
   }
 
   componentWillMount() {
-    if (!this.props.userId) {
-      browserHistory.push('/login/trello');
-    } else if (!this.props.boardId) {
-      browserHistory.push('/settings/board');
-    } else if (!this.props.backlogColumnId || !this.props.doingColumnId || !this.props.doneColumnId || !this.props.validateColumnId) {
-      browserHistory.push('/settings/columns');
-    }
+    browserHistory.push('/');
   }
 
   switchDrawer() {
@@ -40,6 +31,7 @@ export class App extends React.PureComponent { // eslint-disable-line react/pref
   }
 
   render() {
+    if (!this.props.userStoreRehydrated) return <Loader />;
     return (
       <div>
         { this.props.userId &&
@@ -53,12 +45,8 @@ export class App extends React.PureComponent { // eslint-disable-line react/pref
 
 App.propTypes = {
   children: React.PropTypes.node,
+  userStoreRehydrated: React.PropTypes.bool,
   userId: React.PropTypes.string,
-  boardId: React.PropTypes.string,
-  backlogColumnId: React.PropTypes.string,
-  doingColumnId: React.PropTypes.string,
-  doneColumnId: React.PropTypes.string,
-  validateColumnId: React.PropTypes.string,
 };
 
 export function mapDispatchToProps() {
@@ -66,12 +54,8 @@ export function mapDispatchToProps() {
 }
 
 const mapStateToProps = createStructuredSelector({
+  userStoreRehydrated: makeSelectUserRehydrated(),
   userId: makeSelectUserId(),
-  boardId: makeSelectBoardId(),
-  backlogColumnId: makeSelectBacklogColumnId(),
-  doingColumnId: makeSelectDoingColumnId(),
-  doneColumnId: makeSelectDoneColumnId(),
-  validateColumnId: makeSelectValidateColumnId(),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

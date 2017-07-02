@@ -31,6 +31,10 @@ export class SettingsColumns extends React.PureComponent { // eslint-disable-lin
   }
 
   componentWillMount() {
+    if (!this.props.boardId) {
+      browserHistory.push('/settings/board');
+      return;
+    }
     Trello.get(`/boards/${this.props.boardId}/lists`, (list) => {
       this.setState({
         backlogColumnValue: _.filter(list, (column) => column.id === this.props.backlogColumnId)[0],

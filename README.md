@@ -1,6 +1,5 @@
 #Smart Daily
 TODO:
-react persist + localstorage pour persister les données
 
 swippe pour se marquer sur les tickets du backlog
 
