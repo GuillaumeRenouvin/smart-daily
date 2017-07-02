@@ -42,6 +42,7 @@ function userReducer(state = initialState, action) {
     case LOGOUT:
       return state
         .set('userId', null)
+        .set('boardId', null)
         .set('backlogColumnId', null)
         .set('doingColumnId', null)
         .set('validateColumnId', null)

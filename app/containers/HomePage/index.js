@@ -10,7 +10,9 @@ import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import moment from 'moment';
 import ActionInfo from 'material-ui/svg-icons/action/info';
+import ActionFace from 'material-ui/svg-icons/action/face';
 import CardDialog from './CardDialog';
+import { Loader } from '../../components';
 import {
   makeSelectUserId,
   makeSelectUserTrelloToken,
@@ -21,7 +23,7 @@ import {
   makeSelectDoneColumnId,
 } from '../../modules/user/userSelectors';
 
-export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+export class HomePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
 
   constructor(props) {
     super(props);
@@ -111,21 +113,29 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     this.setState({ selectedCard: card });
   }
 
+  subscribeToDoCard = (card) => {
+    let newIdMembersArray = [];
+    if (!_.includes(card.idMembers, this.props.userId)) {
+      newIdMembersArray = _.concat(card.idMembers, this.props.userId);
+    } else newIdMembersArray = _.filter(card.idMembers, (id) => id !== this.props.userId);
+
+    Trello.put(`/cards/${card.id}/idMembers?value=${_.join(newIdMembersArray, ',')}`, (result) => {
+      this.setState({
+        toDoCards: _.map(this.state.toDoCards, (el) => (el.id === result.id) ? result : el),
+      });
+      return newIdMembersArray;
+    });
+  }
+
   renderDoneCards = () =>
     this.state.doneCards.map((doneCard, index) => (
       <ListItem
         key={index}
         primaryText={doneCard.name}
+        secondaryText={_.map(doneCard.labels, (label) => label.name).join('/')}
+        leftIcon={<div />}
+        style={{ textAlign: 'left' }}
         rightIcon={<ActionInfo onClick={() => this.displayModalCard(doneCard)} />}
-      />
-    ));
-
-  renderToDoCards = () =>
-    this.state.toDoCards.map((toDoCard, index) => (
-      <ListItem
-        key={index}
-        primaryText={toDoCard.name}
-        rightIcon={<ActionInfo onClick={() => this.displayModalCard(toDoCard)} />}
       />
     ));
 
@@ -134,11 +144,34 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
       <ListItem
         key={index}
         primaryText={doingCard.name}
+        secondaryText={_.map(doingCard.labels, (label) => label.name).join('/')}
+        leftIcon={<div />}
+        style={{ textAlign: 'left' }}
         rightIcon={<ActionInfo onClick={() => this.displayModalCard(doingCard)} />}
       />
     ));
 
+  renderToDoCards = () =>
+    this.state.toDoCards.map((toDoCard, index) => {
+      const leftIcon = _.includes(toDoCard.idMembers, this.props.userId) ?
+        <ActionFace /> :
+        <div />;
+      return (
+        <ListItem
+          key={index}
+          primaryText={<button style={{ textAlign: 'left', padding: 0, margin: 0 }} onClick={() => this.subscribeToDoCard(toDoCard)} >{toDoCard.name}</button>}
+          secondaryText={_.map(toDoCard.labels, (label) => label.name).join('/')}
+          leftIcon={leftIcon}
+          style={{ textAlign: 'left' }}
+          rightIcon={<ActionInfo style={{ verticalAlign: 'middle', lineHeight: '36px' }} onClick={() => this.displayModalCard(toDoCard)} />}
+        />
+      );
+    });
+
   render() {
+    if (!this.props.backlogColumnId || !this.props.doingColumnId || !this.props.validateColumnId || !this.props.doneColumnId) {
+      return <Loader />;
+    }
     return (
       <div>
         <CardDialog

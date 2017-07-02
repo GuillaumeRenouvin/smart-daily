@@ -17,7 +17,7 @@ export class Board extends React.PureComponent { // eslint-disable-line react/pr
     return (
       <GridTile
         title={this.props.board.name}
-        cols={1}
+        cols={2}
         rows={1}
         style={{ backgroundColor: this.props.board.prefs.background, cursor: 'pointer' }}
         onClick={() => this.selectBoardCard(this.props.board)}
@@ -25,6 +25,7 @@ export class Board extends React.PureComponent { // eslint-disable-line react/pr
         <img
           src={this.props.board.prefs.backgroundImage}
           role={'presentation'}
+          onLoad={() => this.props.handleImageLoaded()}
         />
       </GridTile>
     );
@@ -34,12 +35,13 @@ export class Board extends React.PureComponent { // eslint-disable-line react/pr
 Board.propTypes = {
   onChangeBoardId: React.PropTypes.func,
   onChangeColumnsId: React.PropTypes.func,
+  handleImageLoaded: React.PropTypes.func,
   board: React.PropTypes.object,
 };
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onChangeBoardId: (userId) => dispatch(changeBoardId(userId)),
+    onChangeBoardId: (boardId) => dispatch(changeBoardId(boardId)),
     onChangeColumnsId: (backlogColumnId, doingColumnId, doneColumnId, validateColumnId) =>
       dispatch(changeColumnsId(backlogColumnId, doingColumnId, doneColumnId, validateColumnId)),
   };

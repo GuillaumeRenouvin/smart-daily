@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { browserHistory } from 'react-router';
-import { Flex } from 'reflexbox';
 import { connect } from 'react-redux';
+import FlatButton from 'material-ui/FlatButton';
 import { createStructuredSelector } from 'reselect';
 import { makeSelectUserId, makeSelectUserTrelloToken } from '../../modules/user/userSelectors';
 import { changeUserId, changeUserTrelloToken } from '../../modules/user/actions';
@@ -25,9 +25,24 @@ export class TrelloLogin extends React.PureComponent { // eslint-disable-line re
       });
     };
 
+    const styles = {
+      container: {
+        overflow: 'hidden',
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center',
+      },
+    };
+
     const authenticate = () => {
       Trello.authorize({
-        type: 'popup',
+        callback_method: 'fragment',
+        type: 'redirect',
+        return_url: '/',
         name: 'Smart Daily',
         scope: {
           read: 'true',
@@ -39,11 +54,10 @@ export class TrelloLogin extends React.PureComponent { // eslint-disable-line re
     };
 
     return (
-      <Flex align={'center'} column>
+      <div style={styles.container}>
         <h1>Smart Daily</h1>
-        <h3>Automate your daily scrum tasks</h3>
-        <button onClick={authenticate} >Login with Trello</button>
-      </Flex>
+        <FlatButton onClick={authenticate} >Login with Trello</FlatButton>
+      </div>
     );
   }
 }

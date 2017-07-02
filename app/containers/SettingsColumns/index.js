@@ -14,7 +14,6 @@ import {
   makeSelectDoneColumnId,
 } from '../../modules/user/userSelectors';
 import { changeColumnsId } from '../../modules/user/actions';
-import { Loader } from '../../components';
 import ColumnSelect from './ColumnSelect';
 
 export class SettingsColumns extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
@@ -67,18 +66,20 @@ export class SettingsColumns extends React.PureComponent { // eslint-disable-lin
       root: {
         display: 'flex',
         flex: 1,
-        padding: '7em',
+        padding: '4em',
         flexDirection: 'column',
-        flexWrap: 'wrap',
+      },
+      title: {
+        textAlign: 'left',
+      },
+      button: {
+        height: '3em',
       },
     };
 
     return (
       <div style={styles.root}>
-        <h3>Select a your columns</h3>
-        { !this.state.columnList &&
-          <Loader />
-        }
+        <h2 style={styles.title} >Select a your columns</h2>
         <ColumnSelect
           columnValue={this.state.backlogColumnValue}
           getColumnList={(columnValue) => this.getColumnList(columnValue)}
@@ -110,8 +111,10 @@ export class SettingsColumns extends React.PureComponent { // eslint-disable-lin
         <RaisedButton
           label="Save"
           primary
-          style={{ width: '25%', marginTop: '1em' }}
+          buttonStyle={styles.button}
           onClick={() => this.saveColumns()}
+          style={{ marginTop: '1em' }}
+          fullWidth
         />
       </div>
     );
